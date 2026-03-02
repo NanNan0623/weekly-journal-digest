@@ -9,12 +9,13 @@ import smtplib
 import feedparser
 from dataclasses import dataclass
 from datetime import datetime, timedelta
+from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from dateutil import parser as dtparser
 import pytz
 
 # =========================
-# 时区：中国时间
+# 时区设置：中国时间
 # =========================
 TZ = pytz.timezone("Asia/Shanghai")
 
@@ -60,7 +61,7 @@ class Article:
 
 
 # =========================
-# 时间窗口：上周
+# 获取上周时间窗口
 # =========================
 def get_last_week_window():
     now = datetime.now(TZ)
@@ -71,17 +72,23 @@ def get_last_week_window():
 
 
 # =========================
-# 工具函数
+# 工具函数：清理文本
 # =========================
 def clean_text(text):
     return re.sub(r"\s+", " ", (text or "").strip())
 
 
+# =========================
+# 工具函数：检查关键词是否匹配
+# =========================
 def match_keywords(text):
     text = text.lower()
     return any(k.lower() in text for k in KEYWORDS)
 
 
+# =========================
+# 工具函数：解析文章的日期
+# =========================
 def parse_date(entry):
     try:
         if hasattr(entry, "published"):
@@ -171,7 +178,7 @@ def send_email(subject, content):
     mail_from = os.environ["MAIL_FROM"]
     mail_to = os.environ["MAIL_TO"]
 
-    msg = MIMEMultipart()
+    msg = MIMEMultipart()  # 使用 MIMEMultipart 发送多部分邮件
     msg["From"] = mail_from
     msg["To"] = mail_to
     msg["Subject"] = subject
@@ -187,6 +194,7 @@ def send_email(subject, content):
     except Exception as e:
         print(f"Error sending email: {e}")
 
+
 # =========================
 # 主程序
 # =========================
@@ -195,10 +203,7 @@ def main():
     body = build_email_body(articles, start, end)
     subject = f"Last Week Journal Digest ({start.date()} - {(end - timedelta(seconds=1)).date()})"
     send_email(subject, body)
-    print("Email sent successfully.")
 
 
 if __name__ == "__main__":
-
     main()
-
