@@ -176,11 +176,9 @@ def send_email(subject, content):
     msg["From"] = mail_from
     msg["To"] = mail_to
 
-    with smtplib.SMTP(smtp_host, smtp_port) as server:
-        server.starttls()
-        server.login(smtp_user, smtp_pass)
-        server.sendmail(mail_from, [mail_to], msg.as_string())
-
+    with smtplib.SMTP_SSL(smtp_host, smtp_port) as server:  # 使用 SSL
+    server.login(smtp_user, smtp_pass)
+    server.sendmail(mail_from, [mail_to], msg.as_string())
 
 # =========================
 # 主程序
@@ -194,4 +192,5 @@ def main():
 
 
 if __name__ == "__main__":
+
     main()
