@@ -2,8 +2,7 @@ name: Weekly Journal Digest
 
 on:
   schedule:
-    # UTC 周一 01:00，等同于北京时间周一 09:00
-    - cron: "0 1 * * 1"
+    - cron: "0 1 * * 1"  # UTC 周一 01:00（北京时间周一 09:00）
   workflow_dispatch: {}
 
 jobs:
@@ -26,7 +25,7 @@ jobs:
       - name: Run digest
         env:
           SMTP_HOST: ${{ secrets.SMTP_HOST }}
-          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}  # 端口号
           SMTP_USER: ${{ secrets.SMTP_USER }}
           SMTP_PASS: ${{ secrets.SMTP_PASS }}
           MAIL_FROM: ${{ secrets.MAIL_FROM }}
